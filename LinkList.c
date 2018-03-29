@@ -98,11 +98,12 @@ void LinkList_print(LinkList *l) {
 		p = p->next;
 	}
 }
+
 int main(int argc, char *argv[]) {
+	Order o;
 	strcpy(in_file, argv[1]);
 	strcpy(log_file, argv[2]);
 	strcpy(match_file, argv[3]);
-	printf("%s %s %s\n", in_file, log_file, match_file);
 	char remove_files[12800];
 	sprintf(remove_files, "rm -rf %s %s", log_file, match_file);
 	system(remove_files);
@@ -112,15 +113,12 @@ int main(int argc, char *argv[]) {
 	LinkList_init(&sell);
 	timestamp = state = trade_id = 0;
 	int t = 0;
-	freopen(in_file, "r", stdin);
+	freopen(in_file, "rb", stdin);
 	scanf("%d", &t);
+	printf("t = %d\n", t);
 	while(t--) {
-		Order o = Order_newOrder();
-		o.id = timestamp * 10;
-		o.timestamp = timestamp++;
-		freopen(log_file, "a", stdout);
-		if(timestamp == 0)
-			continue;
+		o = Order_newOrder();
+		freopen(log_file, "ab", stdout);
 		Order_print(&o);
 		if(o.type == BUY)
 			LinkList_addOrder(&buy, o);
@@ -130,8 +128,8 @@ int main(int argc, char *argv[]) {
 			LinkList_replace(&buy, o);
 		if(o.type == REPLACE_SELL)
 			LinkList_replace(&sell, o);
-//		freopen(match_file, "a", stdout);
 		LinkList_match(&buy, &sell);
+		timestamp++;
 	}
 	/*printf("Buy book...\n");
 	LinkList_print(&buy);

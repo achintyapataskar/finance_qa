@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
 	Order *this, o;
 	int timestamp = 0;
 	freopen(argv[1], "w", stdout);
-	int t = 1400;
+	int t = 140;
 	printf("%d\n", t);
 	while(t--) {
 	this = &o;
