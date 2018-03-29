@@ -1,6 +1,19 @@
 #include "LinkList.h"
 #include <string.h>
 
+void LinkList_delete(LinkList *l, node *del) {
+	if(del == l->head) {
+		l->head = del->next;
+		free(del);
+		return;
+	}
+	node *p = l->head;
+	while(p && p->next != del) {
+		p = p->next;
+	}
+	p->next = del->next;
+	free(del);
+}
 void LinkList_deleteHead(LinkList *l) {
 	if(l->head == NULL)
 		return;
@@ -88,7 +101,13 @@ int LinkList_replace(LinkList *l, Order o) {
 		p = p->next;
 	if(p == NULL)
 		return 1;
-	p->this = o;
+	//p->this = o;
+	LinkList_delete(l, p);
+	if(o.type == REPLACE_BUY)
+		o.type = BUY;
+	if(o.type == REPLACE_SELL)
+		o.type = SELL;
+	LinkList_addOrder(l, o);
 	return 0;
 }
 void LinkList_print(LinkList *l) {
