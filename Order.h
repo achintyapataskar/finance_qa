@@ -16,6 +16,7 @@
 #define NOMATCH -1
 
 int state, trade_id, timestamp;
+char in_file[128], log_file[128], match_file[128];
 
 typedef struct Order {
 	int id,

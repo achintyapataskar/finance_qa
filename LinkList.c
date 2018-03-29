@@ -1,4 +1,5 @@
 #include "LinkList.h"
+#include <string.h>
 
 void LinkList_deleteHead(LinkList *l) {
 	if(l->head == NULL)
@@ -53,7 +54,7 @@ void LinkList_match(LinkList *buy, LinkList *sell) {
 	if(buy->head->this.price >= sell->head->this.price) {
 		if(buy->head->this.quant > sell->head->this.quant) {
 			buy->head->this.quant -= sell->head->this.quant;
-			freopen("match.txt", "a", stdout);
+			freopen(match_file, "a", stdout);
 			LinkList_printTrade(buy, sell, sell->head->this.quant);
 			freopen("/dev/ttys000", "a", stdout);
 			sell->head->this.status = FILLED;
@@ -62,7 +63,7 @@ void LinkList_match(LinkList *buy, LinkList *sell) {
 		}
 		if(buy->head->this.quant < sell->head->this.quant) {
 			sell->head->this.quant -= buy->head->this.quant;
-			freopen("match.txt", "a", stdout);
+			freopen(match_file, "a", stdout);
 			LinkList_printTrade(buy, sell, buy->head->this.quant);
 			freopen("/dev/ttys000", "a", stdout);
 			buy->head->this.status = FILLED;
@@ -70,7 +71,7 @@ void LinkList_match(LinkList *buy, LinkList *sell) {
 			return;
 		}
 		if(buy->head->this.quant == sell->head->this.quant) {
-			freopen("match.txt", "a", stdout);
+			freopen(match_file, "a", stdout);
 			LinkList_printTrade(buy, sell, buy->head->this.quant);
 			freopen("/dev/ttys000", "a", stdout);
 			sell->head->this.status = FILLED;
@@ -97,20 +98,27 @@ void LinkList_print(LinkList *l) {
 		p = p->next;
 	}
 }
-int main() {
-	system("rm -rf log.txt match.txt");
+int main(int argc, char *argv[]) {
+	strcpy(in_file, argv[1]);
+	strcpy(log_file, argv[2]);
+	strcpy(match_file, argv[3]);
+	printf("%s %s %s\n", in_file, log_file, match_file);
+	char remove_files[12800];
+	sprintf(remove_files, "rm -rf %s %s", log_file, match_file);
+	system(remove_files);
 	state = REALTIME;
 	LinkList buy, sell;
 	LinkList_init(&buy);
 	LinkList_init(&sell);
 	timestamp = state = trade_id = 0;
 	int t = 0;
+	freopen(in_file, "r", stdin);
 	scanf("%d", &t);
 	while(t--) {
 		Order o = Order_newOrder();
 		o.id = timestamp * 10;
 		o.timestamp = timestamp++;
-		freopen("log.txt", "a", stdout);
+		freopen(log_file, "a", stdout);
 		if(timestamp == 0)
 			continue;
 		Order_print(&o);
@@ -122,7 +130,7 @@ int main() {
 			LinkList_replace(&buy, o);
 		if(o.type == REPLACE_SELL)
 			LinkList_replace(&sell, o);
-		freopen("match.txt", "a", stdout);
+//		freopen(match_file, "a", stdout);
 		LinkList_match(&buy, &sell);
 	}
 	/*printf("Buy book...\n");

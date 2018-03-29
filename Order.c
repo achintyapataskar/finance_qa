@@ -9,9 +9,11 @@ void Order_setSource() {
 }
 Order Order_newOrder() {
 	Order this;
-	//scanf("%c %d %d %d %d %d", &(this.ch), &(this.type), &(this.id), &(this.price), &(this.quant), &(this.timestamp));
+	scanf("%d %d %c %d %d %d %d %d %d\n", &(this.timestamp), &(this.id), &(this.ch), &(this.type), &(this.price), &(this.quant), &(this.status), &(this.broker_id), &(this.matched_order_id));
+
+
 	/* Add random generator here*/
-	this.ch = 'a';
+/*	this.ch = 'a';
 	this.type = random() % 4;
 	this.id = 0;
 	this.quant = random() % 5000;
@@ -20,7 +22,7 @@ Order Order_newOrder() {
 	this.broker_id = random() % 4;
 	this.matched_order_id = NOMATCH;
 	
-	this.status = PENDING;
+	this.status = PENDING;*/
 	return this;
 }
 void Order_print(Order *this) {
